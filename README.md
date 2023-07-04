@@ -1,28 +1,49 @@
 # YT-DLP-Music-Download-Manager
-This is a wrapper around YT-DLP to download all the music files in mp3 format with the highest audio quality in shortest possible time. The main perk here is that it uses multithreading to use maximum amount of resource from your machine to download songs parallaly. 
+
+YT-DLP-Music-Download-Manager is a wrapper around YT-DLP that allows you to download music files in MP3 format with the highest audio quality in the shortest possible time. The main advantage of this tool is that it utilizes multithreading to maximize the utilization of your machine's resources for parallel song downloads.
 
 ## Dependencies
-All you need is to install yt-dlp, python and ffmpeg
-1. Python 3.6 or higher
-2.  `yt-dlp`
-   Install it via ```pip install yt-dlp```
-3. `ffmpeg`
-   Install it via ```sudo apt install ffmpeg``` Without it, music will be stored in `.webm` format
 
+To use YT-DLP-Music-Download-Manager, you need to install the following dependencies:
+
+1. Python 3.6 or higher
+2. `yt-dlp` package: You can install it via `pip` using the command:
+   ```
+   pip install yt-dlp
+   ```
+3. `ffmpeg` package: You can install it via the following command (for Linux):
+   ```
+   sudo apt install ffmpeg
+   ```
+   Installing FFmpeg is essential for storing the music files in MP3 format. Without it, the files will be stored in `.webm` format.
 
 ## How to Use It
-### Step 1: Clone the repo 
-Go to your terminal and run the following command to clone the repo in your machine.
+
+### Step 1: Clone the Repository
+
+Clone the YT-DLP-Music-Download-Manager repository by running the following command in your terminal:
 ```
 git clone https://github.com/redwankarimsony/YT-DLP-Music-Download-Manager.git
 ```
-### Step 2: Change your current location inside the repo.
 
-``` cd YT-DLP-Music-Download-Manager ```
+### Step 2: Navigate to the Repository
 
-### Step 3: Add the playlist links
-Add all the playlists that you want to download into the `playlist_links.txt` file
+Change your current directory to the cloned repository:
+```
+cd YT-DLP-Music-Download-Manager
+```
+
+### Step 3: Add Playlist Links
+
+Add all the playlists that you want to download to the `playlist_links.txt` file. Each playlist link should be on a separate line.
 
 ### Step 4: Download Music
-Run the download script using the following command.
-```python download_script.py```
+
+Run the download script using the following command:
+```
+python download_script.py
+```
+
+This will initiate the music download process using YT-DLP-Music-Download-Manager. The script will fetch the playlist links from the `playlist_links.txt` file and download the music files in MP3 format with the highest audio quality.
+
+Enjoy your downloaded music files!

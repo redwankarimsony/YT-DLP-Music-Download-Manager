@@ -165,11 +165,8 @@ class cfg:
         padding: 15px;
         text-align: center;
         text-decoration: none;
-        display: inline-block;
         font-size: 16px;
         margin: 4px 2px;
-        transition-duration: 0.4s;
-        cursor: pointer;
         border-radius: 12px;
     }
     QPushButton:hover {

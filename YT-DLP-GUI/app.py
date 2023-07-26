@@ -21,16 +21,19 @@ def extract_playlist_link(link):
     :param link:    The link to extract the playlist link from
     :return:    The playlist link if found, None otherwise
     """
-    parts = link.split("&")
-    for part in parts:
-
-        if part.startswith("list"):
-            playlist_id = part.split("=")[-1]
-            playlist_link = f"https://www.youtube.com/playlist?list={playlist_id}"
-
-            return playlist_link
+    if "playlist" in link:
+        return link
     else:
-        return None
+        parts = link.split("&")
+        for part in parts:
+
+            if part.startswith("list"):
+                playlist_id = part.split("=")[-1]
+                playlist_link = f"https://www.youtube.com/playlist?list={playlist_id}"
+
+                return playlist_link
+        else:
+            return None
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -320,7 +323,7 @@ def load_image_from_url(url):
         return pixmap
     else:
         print("Error loading image from url")
-        return None
+        return QPixmap("ui_components/assets/thumbnail_placeholder.png")
 
 
 if __name__ == "__main__":

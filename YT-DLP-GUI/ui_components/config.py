@@ -30,7 +30,7 @@ class cfg:
 
     # download path
     home_dir = os.path.expanduser("~")
-    default_download_path = os.path.join(home_dir, "Music") # Get the path of the user's home directory
+    default_download_path = os.path.join(home_dir, "Music/CarSongs") # Get the path of the user's home directory
 
     combo_style ="""
                                     QComboBox {
@@ -161,11 +161,11 @@ class cfg:
     QPushButton {
         background-color: #4CAF50;
         color: white;
-        border: none;
+        border: 2px solid black;
         padding: 15px;
         text-align: center;
         text-decoration: none;
-        font-size: 16px;
+        font-size: 24px;
         margin: 4px 2px;
         border-radius: 12px;
     }

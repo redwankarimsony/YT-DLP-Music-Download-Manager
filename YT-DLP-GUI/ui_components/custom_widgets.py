@@ -5,9 +5,12 @@ import requests
 import time
 from PyQt5 import QtCore
 from PyQt5.QtCore import QThread, pyqtSignal, QRunnable, pyqtSlot, QObject
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QLabel, QFrame, QPushButton, QVBoxLayout, \
     QHBoxLayout, QWidget
+from PyQt5.QtGui import QDesktopServices
+from PyQt5.QtCore import QUrl
+
 from bs4 import BeautifulSoup
 
 from yt_dlp_components import download_single_audio
@@ -32,39 +35,65 @@ class SingleVideoWidget(QFrame):
         self.layout = QHBoxLayout(self)
         self.thumbnail_label = QLabel()
 
-        self.thumbnail_label.setFixedWidth(320)
-        self.thumbnail_label.setFixedHeight(180)
+        self.thumbnail_label.setFixedWidth(325)
+        self.thumbnail_label.setFixedHeight(185)
         self.thumbnail_label.setAlignment(QtCore.Qt.AlignCenter)
 
-        # id = self.get_youtube_vidoe_id(self.link)
-        # thumbnail_url = self.get_youtube_thumbnail(id)
-        # thumbnail = self.load_image_from_url(thumbnail_url)
-        # self.thumbnail_label.setPixmap(thumbnail)
 
         self.title_label = VideoLinkTitle(self.link)
-        self.download_btn = QPushButton("Download")
-        self.download_btn.setFont(cfg.font)
+        self.download_btn = QPushButton()
+        self.download_btn.setIcon(QIcon("ui_components/assets/button_downlaod.png"))
+        self.download_btn.setIconSize(QtCore.QSize(180, 180)) 
         self.download_btn.setFixedWidth(180)
-        self.download_btn.setFixedHeight(180)
+        self.download_btn.setFixedHeight(90)
+        self.download_btn.setFont(cfg.font)
+        # self.download_btn.setStyleSheet(cfg.download_btn_style2)
+
+        self.open_folder_btn = QPushButton("Open Folder")
+        self.open_folder_btn.setFixedWidth(180)
+        self.open_folder_btn.setFixedHeight(90)
+        self.open_folder_btn.setFont(cfg.font)
+        self.open_folder_btn.setStyleSheet(cfg.download_btn_style2)
+        self.open_folder_btn.setEnabled(False)
+
+        self.play_btn = QPushButton("Play")
+        self.play_btn.setFixedWidth(180)
+        self.play_btn.setFixedHeight(90)
+        self.play_btn.setFont(cfg.font)
+        self.play_btn.setStyleSheet(cfg.download_btn_style2)
+        self.play_btn.setEnabled(False)
+        
+        self.open_folder_btn.setFont(cfg.font)
+
+        self.another_layout = QVBoxLayout()
+        self.another_layout.addWidget(self.open_folder_btn)
+        self.another_layout.addWidget(self.play_btn)
+        x = QWidget()
+        x.setLayout(self.another_layout)
+        # x.setStyleSheet("background-color: rgb(128, 128, 128);")  
+
         self.layout.addWidget(self.thumbnail_label, alignment=QtCore.Qt.AlignLeft)
         self.layout.addSpacing(5)
         self.layout.addWidget(self.title_label, alignment=QtCore.Qt.AlignCenter)
+        self.layout.addSpacing(5)
+        self.layout.addWidget(x, alignment=QtCore.Qt.AlignCenter)
         self.layout.addSpacing(5)
         self.layout.addWidget(self.download_btn, alignment=QtCore.Qt.AlignRight)
         self.setStyleSheet("background-color: rgb(128, 128, 128);")
 
         self.worker = DownloadWorker(video_link=self.link, options=self.options)
         self.worker.finished.connect(self.handle_finished)
-
         self.download_btn.clicked.connect(self.handle_clicked)
-        self.download_btn.setStyleSheet(cfg.download_btn_style2)
+        
 
     def set_thumbnail(self, pixmap):
         self.thumbnail_label.setPixmap(pixmap)
         self.thumbnail_label.repaint()
+        self.thumbnail_label.setStyleSheet("border-radius: 10px;border: 5px solid red;")
 
     def set_title(self, title):
         self.title_label.title_label.setText(title)
+        
 
     @staticmethod
     def get_youtube_thumbnail(video_id):
@@ -89,13 +118,20 @@ class SingleVideoWidget(QFrame):
     def handle_clicked(self):
         print("Clicked Download button with link: ", self.link)
         self.download_btn.setEnabled(False)
-        self.download_btn.setText("Downloading")
+        self.download_btn.setIcon(QIcon("ui_components/assets/button_downlaoding.png"))
         self.worker.start()
 
     def handle_finished(self, result):
         print("Finished Downloading")
-        self.download_btn.setText("Downloaded")
+        self.download_btn.setIcon(QIcon("ui_components/assets/button_downlaoded.png"))
         self.download_btn.setEnabled(True)
+        self.open_folder_btn.setEnabled(True)
+        self.play_btn.setEnabled(True)
+        self.open_folder_btn.clicked.connect(self.handle_open_folder)
+
+    def handle_open_folder(self):
+            QDesktopServices.openUrl(QUrl.fromLocalFile(cfg.default_download_path))
+
 
 
 class VideoLinkTitle(QWidget):
@@ -105,6 +141,8 @@ class VideoLinkTitle(QWidget):
         self.title_label = None
         self.layout = None
         self.link = link
+        self.setFixedWidth(720)
+        self.setFixedHeight(180)
         self.initUi()
 
     def initUi(self):

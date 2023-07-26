@@ -4,7 +4,7 @@ import os
 import requests
 import time
 from PyQt5 import QtCore
-from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtCore import QThread, pyqtSignal, QRunnable, pyqtSlot, QObject
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QLabel, QFrame, QPushButton, QVBoxLayout, \
     QHBoxLayout, QWidget
@@ -34,23 +34,23 @@ class SingleVideoWidget(QFrame):
 
         self.thumbnail_label.setFixedWidth(320)
         self.thumbnail_label.setFixedHeight(180)
-
-        id = self.get_youtube_vidoe_id(self.link)
-        thumbnail_url = self.get_youtube_thumbnail(id)
-        thumbnail = self.load_image_from_url(thumbnail_url)
         self.thumbnail_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.thumbnail_label.setPixmap(thumbnail)
+
+        # id = self.get_youtube_vidoe_id(self.link)
+        # thumbnail_url = self.get_youtube_thumbnail(id)
+        # thumbnail = self.load_image_from_url(thumbnail_url)
+        # self.thumbnail_label.setPixmap(thumbnail)
 
         self.title_label = VideoLinkTitle(self.link)
         self.download_btn = QPushButton("Download")
         self.download_btn.setFont(cfg.font)
         self.download_btn.setFixedWidth(180)
         self.download_btn.setFixedHeight(180)
-        self.layout.addWidget(self.thumbnail_label)
+        self.layout.addWidget(self.thumbnail_label, alignment=QtCore.Qt.AlignLeft)
         self.layout.addSpacing(5)
-        self.layout.addWidget(self.title_label)
+        self.layout.addWidget(self.title_label, alignment=QtCore.Qt.AlignCenter)
         self.layout.addSpacing(5)
-        self.layout.addWidget(self.download_btn)
+        self.layout.addWidget(self.download_btn, alignment=QtCore.Qt.AlignRight)
         self.setStyleSheet("background-color: rgb(128, 128, 128);")
 
         self.worker = DownloadWorker(video_link=self.link, options=self.options)
@@ -58,6 +58,13 @@ class SingleVideoWidget(QFrame):
 
         self.download_btn.clicked.connect(self.handle_clicked)
         self.download_btn.setStyleSheet(cfg.download_btn_style2)
+
+    def set_thumbnail(self, pixmap):
+        self.thumbnail_label.setPixmap(pixmap)
+        self.thumbnail_label.repaint()
+
+    def set_title(self, title):
+        self.title_label.title_label.setText(title)
 
     @staticmethod
     def get_youtube_thumbnail(video_id):
@@ -111,7 +118,8 @@ class VideoLinkTitle(QWidget):
         self.setStyleSheet("background-color: rgb(128, 128, 128);")
 
         self.link_label.setText(self.link)
-        self.title_label.setText(self.get_youtube_video_title(self.link))
+        # self.title_label.setText(self.get_youtube_video_title(self.link))
+        self.title_label.setText("Downloading...")
 
     @staticmethod
     def get_youtube_video_title(video_url):
